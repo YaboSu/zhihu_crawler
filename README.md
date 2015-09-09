@@ -22,7 +22,7 @@ q.persist(open(str(qid)+'.json', 'w', encoding='utf-8'))  # 以json的格式存�
 ```python
 from zhihu_person import Person
 
-pid = 'liu-peng-cheng-sai-l'
+pid = '<pid>'  # 用户id
 p = Person(pid)
 p.update()
 p.persist(open(str(pid)+'.json', 'w', encoding='utf-8'))  # 以json的格式存储下来
