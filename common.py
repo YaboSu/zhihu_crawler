@@ -3,21 +3,28 @@ import requests
 import logging
 
 
-def post(url, headers, data):
+def post(url, otherHeaders, data):
     session = _getSession()
+    headers = dict(_getConfig()['headers'])
+    for key in otherHeaders:
+        headers[key] = otherHeaders[key]
     response = session.post(url, headers=headers, data=data)
-    checkResponse(response)
+    _checkResponse(response)
     return response
 
 
-def get(url):
+def get(url, otherHeaders=None):
     session = _getSession()
-    response = session.get(url)
-    checkResponse(response)
+    headers = dict(_getConfig()['headers'])
+    if otherHeaders is not None:
+        for key in otherHeaders:
+            headers[key] = otherHeaders[key]
+    response = session.get(url, headers=headers)
+    _checkResponse(response)
     return response
 
 
-def checkResponse(response):
+def _checkResponse(response):
     if response.status_code != 200:
         logging.warning(response.status_code)
 
@@ -67,5 +74,7 @@ def _signin():
                 exit(1)
             else:
                 print('signin sucessfully!')
+    else:
+        print('signin sucessfully!')
     logging.basicConfig(filename='zhihu_crawler.log', level=logging.INFO)
     return session
