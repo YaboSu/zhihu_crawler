@@ -2,7 +2,7 @@ import math
 import datetime
 import json
 from bs4 import BeautifulSoup
-from common import get, post, parseNum
+from .common import get, post, parseNum
 
 
 class Question:

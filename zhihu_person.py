@@ -2,7 +2,7 @@ import math
 import datetime
 import json
 from bs4 import BeautifulSoup
-from common import get, post, parseNum
+from .common import get, post, parseNum
 
 
 class Person:
@@ -74,7 +74,7 @@ class Person:
     def _getFollowees(self, count):
         followeesUrl = 'http://www.zhihu.com/people/%s/followees' % (self.pid)
         otherHeaders = {'Referer': 'http://www.zhihu.com/people/'+self.pid}
-        htmlText = get(followeesUrl, headers=otherHeaders).text
+        htmlText = get(followeesUrl, otherHeaders).text
 
         soup = BeautifulSoup(htmlText)
 
@@ -89,7 +89,7 @@ class Person:
             for i in range(1, math.ceil(count/20)):
                 params['offset'] = i*20
                 data = {"_xsrf": _xsrf, "method": 'next', 'params': json.dumps(params)}
-                r = post('http://www.zhihu.com/node/ProfileFolloweesListV2', headers=otherHeaders, data=data)
+                r = post('http://www.zhihu.com/node/ProfileFolloweesListV2', otherHeaders, data)
                 for block in r.json()['msg']:
                     followeePid = BeautifulSoup(block).find('a', class_='zm-item-link-avatar')['href'][8:]
                     self.followees.append(followeePid)
@@ -97,7 +97,7 @@ class Person:
     def getTopics(self, count):
         topicsUrl = 'http://www.zhihu.com/people/%s/topics' % (self.pid)
         otherHeaders = {'Referer': 'http://www.zhihu.com/people/'+self.pid}
-        soup = BeautifulSoup(get(topicsUrl, headers=otherHeaders).text)
+        soup = BeautifulSoup(get(topicsUrl, otherHeaders).text)
 
         # 每次20个
         for div in soup.find_all('div', class_='zm-profile-section-main'):
@@ -108,7 +108,7 @@ class Person:
             otherHeaders = {'Referer': topicsUrl}
             for i in range(1, math.ceil(count/20)):
                 data = {"_xsrf": _xsrf, "start": 0, 'offset': i*20}
-                r = post(topicsUrl, headers=otherHeaders, data=data)
+                r = post(topicsUrl, otherHeaders, data)
                 moresoup = BeautifulSoup(r.json()['msg'][1])
                 for div in moresoup.find_all('div', class_='zm-profile-section-main'):
                     topic = div.find('a', attrs={"data-tip": True}).strong.text
