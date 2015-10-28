@@ -8,7 +8,7 @@ def post(url, otherHeaders, data):
     headers = dict(_getConfig()['headers'])
     for key in otherHeaders:
         headers[key] = otherHeaders[key].encode("utf-8").decode("latin1")
-    response = session.post(url, headers=headers, data=data)
+    response = session.post(url, headers=headers, data=data, timeout=60)
     _checkResponse(response)
     return response
 
@@ -19,7 +19,7 @@ def get(url, otherHeaders=None):
     if otherHeaders is not None:
         for key in otherHeaders:
             headers[key] = otherHeaders[key].encode("utf-8").decode("latin1")
-    response = session.get(url, headers=headers)
+    response = session.get(url, headers=headers, timeout=60)
     _checkResponse(response)
     return response
 
