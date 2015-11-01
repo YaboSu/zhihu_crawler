@@ -25,7 +25,7 @@ class Person:
         else:
             self.lastModified = dictResp['lastModified']
             self.pid = dictResp['pid']
-            self.pid = dictResp['followees']
+            self.followees = dictResp['followees']
             self.topics = dictResp['topics']
             self.followersCount = dictResp['followersCount']
             self.agreeCount = dictResp['agreeCount']
@@ -35,6 +35,14 @@ class Person:
     def update(self):
         self.lastModified = str(datetime.datetime.now())
         r = get('http://www.zhihu.com/people/'+self.pid)
+        if r.status_code == 404:
+            self.followees = []
+            self.topics = []
+            self.followersCount = 0
+            self.agreeCount = 0
+            self.asksCount = 0
+            self.answersCount = 0
+            return True
         if r.status_code != 200:
             return False
         self._parsePage(r.text)
@@ -69,7 +77,7 @@ class Person:
                 break
         self.topics = []
         if topicsFollowedCount > 0:
-            self.getTopics(topicsFollowedCount)  # 获取关注的话题
+            self._getTopics(topicsFollowedCount)  # 获取关注的话题
 
     def _getFollowees(self, count):
         followeesUrl = 'http://www.zhihu.com/people/%s/followees' % (self.pid)
@@ -94,7 +102,7 @@ class Person:
                     followeePid = BeautifulSoup(block).find('a', class_='zm-item-link-avatar')['href'][8:]
                     self.followees.append(followeePid)
 
-    def getTopics(self, count):
+    def _getTopics(self, count):
         topicsUrl = 'http://www.zhihu.com/people/%s/topics' % (self.pid)
         otherHeaders = {'Referer': 'http://www.zhihu.com/people/'+self.pid}
         soup = BeautifulSoup(get(topicsUrl, otherHeaders).text)

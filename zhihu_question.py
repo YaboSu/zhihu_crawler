@@ -38,6 +38,13 @@ class Question:
 
         qurl = 'http://www.zhihu.com/question/%d' % (self.qid)
         r = get(qurl)
+        if r.status_code == 404:
+            self.title = ''
+            self.detail = ''
+            self.tags = []
+            self.followersCount = 0
+            self.answers = []
+            return True
         if r.status_code != 200:
             return False
 
