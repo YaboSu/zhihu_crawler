@@ -43,6 +43,8 @@ def get_questions_list(topic_id, output_file, start_page=1, max_page=10, sleep_s
     '''
     按照时间倒序获取某话题下的问题列表
     爬取的属性：ID，标题，提出时间，来自的子话题，回答数量
+
+    2016年2月后知乎不再提供“全部问题”页面
     '''
 
     def _get_each_question(page):
@@ -170,9 +172,15 @@ def get_voters_profile(answer_id):
                 uid = block['href'][8:]
             else:
                 uid = -1  # 匿名投票
-            # 赞同数, 感谢数, 提问数, 回答数
-            profile = [int(s.partition(' ')[0]) for s in soup.find('ul', class_='status').text.split('\n') if s.strip() != '']
+                voters.append((uid, [0, 0, 0, 0]))
+            block = soup.find('ul', class_='status')
+            if block:
+                # 赞同数, 感谢数, 提问数, 回答数
+                profile = [parse_num(s.partition(' ')[0]) for s in block.text.split('\n') if s.strip() != '']
+            else:
+                profile = [-1, -1, -1, -1]
             voters.append((uid, profile))
+
         return r['paging']['next']
 
     url = 'https://www.zhihu.com/answer/%d/voters_profile' % answer_id
