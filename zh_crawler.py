@@ -45,6 +45,8 @@ def get_questions_list(topic_id, output_file, start_page=1, max_page=10, sleep_s
     爬取的属性：ID，标题，提出时间，来自的子话题，回答数量
 
     2016年2月后知乎不再提供“全部问题”页面
+    2016年2月26日恢复了23日上线时去掉的「全部问题」列表
+    参见 https://www.zhihu.com/question/40470324
     '''
 
     def _get_each_question(page):
