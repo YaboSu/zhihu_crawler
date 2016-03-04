@@ -101,6 +101,7 @@ def get_question(session, question_id):
         return None
     soup = BeautifulSoup(response.text, 'lxml')
     question = {}
+    question['id'] = question_id
     # 标题
     question['title'] = soup.find('h2', class_='zm-item-title').text.strip()
     # 内容
