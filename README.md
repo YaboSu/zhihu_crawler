@@ -15,7 +15,7 @@ with open('questions_list.txt', 'a', encoding='utf8') as f:
 
 * 爬取问题
 
-爬取内容：问题ID、标题、内容、标签、提问者、所有回答（回答人、回答内容、赞数）
+爬取内容：问题ID、标题、内容、标签、提问者、所有回答（回答人、回答内容、回答时间、赞数）
 ```python
 from zhihu_crawler import zh_crawler
 
